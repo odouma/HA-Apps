@@ -1,0 +1,17 @@
+name: "Solar Reporter"
+version: "1.0.0"
+slug: "solar_reporter"
+description: "Elektriciteitstarieven bijhouden en PDF-rapportages over de opbrengst van je zonnepanelen versturen"
+arch:
+  - aarch64
+  - amd64
+init: false
+startup: application
+boot: auto
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:flash
+panel_title: Solar Reporter
+homeassistant_api: true
+options: {}
+schema: {}
