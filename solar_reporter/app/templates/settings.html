@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instellingen — Solar Reporter</title>
+<link rel="stylesheet" href="static/style.css?v={{ v }}">
+<link rel="stylesheet" href="static/settings.css?v={{ v }}">
+</head>
+<body>
+  <div class="container">
+    <a href="." class="back-link">← Terug naar tarieven</a>
+    <h1>⚙️ Instellingen</h1>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="algemeen">Algemeen</button>
+      <button class="tab-btn" data-tab="entiteiten">Entiteiten</button>
+      <button class="tab-btn" data-tab="apparaat">MQTT</button>
+      <button class="tab-btn" data-tab="email">E-mail</button>
+      <button class="tab-btn" data-tab="rapportages">Rapportages</button>
+    </div>
+
+    <!-- Algemeen -->
+    <section class="tab-panel active card" id="tab-algemeen">
+      <h2>Algemeen</h2>
+      <div class="field">
+        <label for="refresh_interval">Ververinterval (seconden)</label>
+        <input type="number" id="refresh_interval" min="5" step="1">
+        <p class="hint">Hoe vaak de sensoren in Home Assistant worden bijgewerkt. Standaard 10 seconden.</p>
+      </div>
+    </section>
+
+    <!-- Entiteiten -->
+    <section class="tab-panel card" id="tab-entiteiten">
+      <h2>Entiteiten</h2>
+      <div class="field">
+        <label for="entity_power">Entiteit: huidig vermogen (Watt)</label>
+        <div class="entity-picker">
+          <input type="text" id="entity_power" placeholder="Zoek een entiteit met eenheid W..." autocomplete="off">
+          <div class="entity-picker-list hidden" id="entity_power_list"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="entity_energy_today">Entiteit: dagelijkse opbrengst (kWh, reset om middernacht)</label>
+        <div class="entity-picker">
+          <input type="text" id="entity_energy_today" placeholder="Zoek een entiteit met eenheid kWh..." autocomplete="off">
+          <div class="entity-picker-list hidden" id="entity_energy_today_list"></div>
+        </div>
+        <p class="hint">Deze twee entiteiten worden gebruikt voor de besparingsberekening en de rapportages. Klik in het veld om alle entiteiten met de juiste eenheid te zien, of typ om te zoeken.</p>
+      </div>
+    </section>
+
+    <!-- Apparaat / MQTT -->
+    <section class="tab-panel card" id="tab-apparaat">
+      <h2>MQTT</h2>
+      <p class="hint">
+        Wil je de sensoren van deze addon gegroepeerd zien onder één apparaat
+        "Solar Reporter" in Home Assistant (in plaats van losse sensoren)? Dat
+        kan via MQTT-discovery. Dit vereist een MQTT-broker (bijv. de
+        "Mosquitto broker" app) en de MQTT-integratie in Home Assistant.
+      </p>
+      <div class="field checkbox-field">
+        <label><input type="checkbox" id="mqtt_enabled"> MQTT gebruiken voor apparaat-groepering</label>
+      </div>
+      <div class="field">
+        <label for="mqtt_host">MQTT-server</label>
+        <input type="text" id="mqtt_host" placeholder="core-mosquitto">
+      </div>
+      <div class="field">
+        <label for="mqtt_port">Poort</label>
+        <input type="number" id="mqtt_port" placeholder="1883">
+      </div>
+      <div class="field">
+        <label for="mqtt_username">Gebruikersnaam</label>
+        <input type="text" id="mqtt_username">
+      </div>
+      <div class="field">
+        <label for="mqtt_password">Wachtwoord</label>
+        <input type="password" id="mqtt_password">
+      </div>
+    </section>
+
+    <!-- E-mail -->
+    <section class="tab-panel card" id="tab-email">
+      <h2>E-mail (SMTP)</h2>
+      <p class="hint">Nodig om rapportages per e-mail te kunnen versturen.</p>
+      <div class="field">
+        <label for="smtp_host">SMTP-server</label>
+        <input type="text" id="smtp_host" placeholder="smtp.voorbeeld.nl">
+      </div>
+      <div class="field">
+        <label for="smtp_port">Poort</label>
+        <input type="number" id="smtp_port" placeholder="587">
+      </div>
+      <div class="field">
+        <label for="smtp_encryption">Beveiliging</label>
+        <select id="smtp_encryption">
+          <option value="starttls">STARTTLS</option>
+          <option value="ssl">SSL</option>
+          <option value="none">Geen</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="smtp_username">Gebruikersnaam</label>
+        <input type="text" id="smtp_username">
+      </div>
+      <div class="field">
+        <label for="smtp_password">Wachtwoord</label>
+        <input type="password" id="smtp_password">
+      </div>
+      <div class="field">
+        <label for="smtp_from">Afzenderadres</label>
+        <input type="email" id="smtp_from" placeholder="stroomtarieven@voorbeeld.nl">
+      </div>
+
+      <hr>
+
+      <h2>Mail tekst</h2>
+      <p class="hint">Klik op een tag om deze in te voegen op de cursorpositie.</p>
+      <div class="field">
+        <label for="daily_subject">Onderwerp dagrapport</label>
+        <input type="text" id="daily_subject" placeholder="Dagrapport stroomopbrengst {datum}">
+        <div class="pdf-tag-list" id="daily_subject_tags"></div>
+      </div>
+      <div class="field">
+        <label for="daily_body">Berichttekst dagrapport</label>
+        <textarea id="daily_body" rows="4"></textarea>
+        <div class="pdf-tag-list" id="daily_body_tags"></div>
+      </div>
+      <div class="field">
+        <label for="monthly_subject">Onderwerp maandrapport</label>
+        <input type="text" id="monthly_subject" placeholder="Maandrapport stroomopbrengst {maand}">
+        <div class="pdf-tag-list" id="monthly_subject_tags"></div>
+      </div>
+      <div class="field">
+        <label for="monthly_body">Berichttekst maandrapport</label>
+        <textarea id="monthly_body" rows="4"></textarea>
+        <div class="pdf-tag-list" id="monthly_body_tags"></div>
+      </div>
+    </section>
+
+    <!-- Rapportages -->
+    <section class="tab-panel card" id="tab-rapportages">
+      <h2>Dagelijks rapport</h2>
+      <div class="field checkbox-field">
+        <label><input type="checkbox" id="daily_enabled"> Dagelijks rapport versturen</label>
+      </div>
+      <div class="field">
+        <label for="daily_time">Verzendtijd</label>
+        <input type="time" id="daily_time">
+        <p class="hint">Kies een tijd na zonsondergang voor een volledig dagbeeld.</p>
+      </div>
+      <div class="field">
+        <label for="daily_recipients">Ontvangers</label>
+        <div class="chip-input" id="daily_recipients_wrap">
+          <input type="email" id="daily_recipients_input" placeholder="e-mailadres + Enter">
+        </div>
+      </div>
+      <button type="button" class="secondary" id="edit-pdf-daily-btn">🎨 PDF-opmaak bewerken</button>
+      <button type="button" class="secondary" id="test-daily-btn">✉️ Testrapport nu versturen</button>
+      <p id="test-daily-result" class="hint hidden"></p>
+
+      <hr>
+
+      <h2>Maandelijks rapport</h2>
+      <div class="field checkbox-field">
+        <label><input type="checkbox" id="monthly_enabled"> Maandelijks rapport versturen</label>
+      </div>
+      <div class="field">
+        <label for="monthly_day">Verzenddag van de maand</label>
+        <input type="number" id="monthly_day" min="1" max="28">
+        <p class="hint">Het rapport gaat altijd over de vólledige vorige maand.</p>
+      </div>
+      <div class="field">
+        <label for="monthly_time">Verzendtijd</label>
+        <input type="time" id="monthly_time">
+      </div>
+      <div class="field">
+        <label for="monthly_recipients">Ontvangers</label>
+        <div class="chip-input" id="monthly_recipients_wrap">
+          <input type="email" id="monthly_recipients_input" placeholder="e-mailadres + Enter">
+        </div>
+      </div>
+      <button type="button" class="secondary" id="edit-pdf-monthly-btn">🎨 PDF-opmaak bewerken</button>
+      <button type="button" class="secondary" id="test-monthly-btn">✉️ Testrapport nu versturen</button>
+      <p id="test-monthly-result" class="hint hidden"></p>
+    </section>
+
+    <div class="save-bar">
+      <button type="button" id="save-btn">Instellingen opslaan</button>
+      <span id="save-status" class="hint"></span>
+    </div>
+  </div>
+
+  <!-- PDF-opmaak (modal, geopend vanuit Rapportages per rapporttype) -->
+  <div class="pdf-modal-overlay hidden" id="pdf-modal-overlay">
+    <div class="pdf-modal">
+      <div class="pdf-modal-header">
+        <h2 id="pdf-modal-title">PDF-opmaak</h2>
+        <button type="button" class="pdf-modal-close" id="pdf-modal-close" aria-label="Sluiten">×</button>
+      </div>
+
+      <p class="hint">
+        Sleep de onderdelen naar de gewenste plek en gebruik de handvatten om
+        ze in grootte aan te passen. Voor tekst kun je tags (tussen
+        accolades) invoegen die automatisch worden vervangen door de echte
+        waarden. De voorbeeldweergave onderaan toont steeds de actuele PDF.
+      </p>
+
+      <div class="pdf-toolbar">
+        <button type="button" class="secondary small" id="pdf-copy-other">Kopieer opmaak van ander rapport</button>
+        <span class="pdf-toolbar-spacer"></span>
+        <button type="button" class="secondary small" id="pdf-reset">Standaardlayout herstellen</button>
+      </div>
+
+      <div class="pdf-toolbar">
+        <button type="button" class="secondary small" id="pdf-add-text">+ Tekst</button>
+        <button type="button" class="secondary small" id="pdf-add-image">+ Afbeelding (logo)</button>
+        <button type="button" class="secondary small" id="pdf-add-chart">+ Grafiek</button>
+        <button type="button" class="secondary small" id="pdf-add-line">+ Lijn</button>
+        <button type="button" class="secondary small" id="pdf-add-rect">+ Rechthoek</button>
+      </div>
+
+      <div class="pdf-editor">
+        <div class="pdf-page" id="pdf-page"></div>
+
+        <div class="pdf-sidebar">
+          <div class="pdf-accordion-section">
+            <button type="button" class="pdf-accordion-toggle" data-target="pdf-layers-body">
+              <span class="pdf-accordion-arrow">▾</span> Lagen
+            </button>
+            <div class="pdf-accordion-body" id="pdf-layers-body">
+              <div id="pdf-layers"></div>
+            </div>
+          </div>
+
+          <div class="pdf-accordion-section">
+            <button type="button" class="pdf-accordion-toggle" data-target="pdf-inspector-body">
+              <span class="pdf-accordion-arrow">▾</span> Eigenschappen
+            </button>
+            <div class="pdf-accordion-body" id="pdf-inspector-body">
+              <div class="pdf-inspector" id="pdf-inspector">
+                <p class="hint">Selecteer een onderdeel om de opmaak aan te passen.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pdf-preview-wrap">
+        <h3>Voorbeeldweergave</h3>
+        <iframe id="pdf-preview-frame" class="pdf-preview-frame" title="PDF-voorbeeld"></iframe>
+        <p class="hint" id="pdf-preview-status"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/settings.js?v={{ v }}"></script>
+  <script src="static/pdf_editor.js?v={{ v }}"></script>
+</body>
+</html>
