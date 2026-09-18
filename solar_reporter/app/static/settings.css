@@ -127,6 +127,10 @@ select {
   position: relative;
 }
 
+.entity-picker input {
+  width: 100%;
+}
+
 .entity-picker-list {
   position: absolute;
   top: 100%;
