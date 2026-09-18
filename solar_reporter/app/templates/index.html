@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar Reporter</title>
+<link rel="stylesheet" href="static/style.css?v={{ v }}">
+</head>
+<body>
+  <div class="container">
+    <div class="header-row">
+      <h1>⚡ Solar Reporter</h1>
+      <a href="settings" class="settings-link">⚙️ Instellingen</a>
+    </div>
+    <div class="card savings-card">
+      <div class="savings-item">
+        <span class="savings-label">Besparing vandaag</span>
+        <span class="savings-value" id="savings-today">—</span>
+      </div>
+      <div class="savings-item">
+        <span class="savings-label">Totale besparing</span>
+        <span class="savings-value" id="savings-total">—</span>
+      </div>
+      <p id="savings-note" class="savings-note hidden"></p>
+    </div>
+
+    <h2>Overzicht tarieven</h2>
+    <table class="card">
+      <thead>
+        <tr>
+          <th>Ingangsdatum</th>
+          <th>Tarief (€/kWh)</th>
+          <th>Status</th>
+          <th>Acties</th>
+        </tr>
+      </thead>
+      <tbody id="tariff-table-body">
+        <tr><td colspan="4" class="empty">Tarieven worden geladen...</td></tr>
+      </tbody>
+    </table>
+    <button type="button" id="add-tariff-btn" class="add-tariff-btn">+ Nieuw tarief toevoegen</button>
+
+    <h2>Rapportages</h2>
+    <div class="card reports-overview">
+      <div class="report-overview-item">
+        <div>
+          <strong>Dagrapport</strong>
+          <p class="hint" id="report-daily-info">—</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="report-daily-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="report-overview-item">
+        <div>
+          <strong>Maandrapport</strong>
+          <p class="hint" id="report-monthly-info">—</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="report-monthly-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">Verzendtijden en ontvangers stel je in bij <a href="settings">Instellingen → Rapportages</a>.</p>
+    </div>
+  </div>
+
+  <!-- Nieuw/bewerk tarief (pop-up) -->
+  <div class="tariff-modal-overlay hidden" id="tariff-modal-overlay">
+    <div class="tariff-modal">
+      <div class="tariff-modal-header">
+        <h2 id="tariff-modal-title">Nieuw tarief</h2>
+        <button type="button" class="tariff-modal-close" id="tariff-modal-close" aria-label="Sluiten">×</button>
+      </div>
+
+      <form id="tariff-form">
+        <input type="hidden" id="tariff-id" value="">
+
+        <div class="field">
+          <label for="valid_from">Ingangsdatum</label>
+          <input type="date" id="valid_from" required>
+        </div>
+
+        <div class="field">
+          <label for="price">Tarief (€ per kWh)</label>
+          <input type="number" id="price" step="0.0000001" min="0" placeholder="0,2500000" required>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn">Tarief toevoegen</button>
+          <button type="button" id="cancel-btn" class="secondary">Annuleren</button>
+        </div>
+
+        <p id="form-error" class="error hidden"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="static/script.js?v={{ v }}"></script>
+</body>
+</html>
